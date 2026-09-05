@@ -1,0 +1,2722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MedLens — Clinical Information Intelligence</title>
+
+<style>
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Inter, Arial, sans-serif;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #0f766e;
+    --bg: #f5f8fc;
+    --card: #ffffff;
+    --text: #172033;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --success: #16a34a;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    width: 250px;
+    background: #0f172a;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 22px 15px;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.logo-icon {
+    width: 43px;
+    height: 43px;
+    background: linear-gradient(135deg, #2563eb, #14b8a6);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.logo h2 {
+    font-size: 21px;
+}
+
+.logo span {
+    color: #60a5fa;
+}
+
+.nav-item {
+    padding: 13px 15px;
+    margin: 5px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.2s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #1e40af;
+    color: white;
+}
+
+.sidebar-bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 15px;
+    right: 15px;
+}
+
+.user-mini {
+    background: #1e293b;
+    padding: 12px;
+    border-radius: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    background: #2563eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+    height: 72px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 500;
+}
+
+.header-title h2 {
+    font-size: 20px;
+}
+
+.header-title p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.notification {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content {
+    padding: 30px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-header h3 {
+    font-size: 17px;
+}
+
+.card-header p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    font-size: 20px;
+}
+
+.stat-value {
+    font-size: 27px;
+    font-weight: 700;
+    margin-top: 15px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* =========================================================
+   DASHBOARD GRID
+========================================================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.action {
+    border: 1px solid var(--border);
+    padding: 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.action:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.action h4 {
+    margin-bottom: 5px;
+}
+
+.action p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn {
+    border: none;
+    padding: 11px 17px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.btn-success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* =========================================================
+   PATIENT PROFILE
+========================================================= */
+
+.patient-profile {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    margin-bottom: 20px;
+}
+
+.patient-avatar {
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #2563eb, #14b8a6);
+    color: white;
+    border-radius: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.patient-info h2 {
+    font-size: 21px;
+}
+
+.patient-info p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+/* =========================================================
+   REPORT UPLOAD
+========================================================= */
+
+.upload-box {
+    border: 2px dashed #93c5fd;
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    background: #eff6ff;
+    cursor: pointer;
+}
+
+.upload-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.upload-box h3 {
+    margin-bottom: 7px;
+}
+
+.upload-box p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+th {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.status-normal {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-high {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-low {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-unknown {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badge {
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-ai {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.badge-user {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge-verified {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-review {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.summary-box {
+    background: linear-gradient(135deg, #eff6ff, #f0fdfa);
+    border: 1px solid #bfdbfe;
+    border-radius: 14px;
+    padding: 20px;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert {
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.alert-warning {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-info {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+.timeline {
+    position: relative;
+    padding-left: 25px;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dbeafe;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -24px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 50%;
+}
+
+.timeline-item h4 {
+    font-size: 14px;
+}
+
+.timeline-item p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    flex: 1;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.close {
+    cursor: pointer;
+    font-size: 22px;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    background: #0f172a;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    display: none;
+    z-index: 5000;
+}
+
+.toast.show {
+    display: block;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+.mobile-menu {
+    display: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+@media(max-width: 1000px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 750px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: 0.3s;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .header {
+        padding: 0 15px;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">⚕</div>
+        <h2>Med<span>Lens</span></h2>
+    </div>
+
+    <div class="nav-item active" onclick="showPage('dashboard', this)">
+        📊 <span>Dashboard</span>
+    </div>
+
+    <div class="nav-item" onclick="showPage('patient', this)">
+        👤 <span>Patient Intake</span>
+    </div>
+
+    <div class="nav-item" onclick="showPage('reports', this)">
+        📄 <span>Medical Reports</span>
+    </div>
+
+    <div class="nav-item" onclick="showPage('records', this)">
+        🧬 <span>Structured Record</span>
+    </div>
+
+    <div class="nav-item" onclick="showPage('summary', this)">
+        🤖 <span>AI Summary</span>
+    </div>
+
+    <div class="nav-item" onclick="showPage('history', this)">
+        🕒 <span>Patient History</span>
+    </div>
+
+    <div class="nav-item" onclick="showPage('audit', this)">
+        🔐 <span>Audit History</span>
+    </div>
+
+    <div class="sidebar-bottom">
+
+        <div class="user-mini">
+            <div class="avatar">DR</div>
+
+            <div>
+                <strong>Dr. User</strong>
+                <div style="font-size:11px;color:#94a3b8">
+                    Medical Staff
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+<header class="header">
+
+    <div style="display:flex;align-items:center;gap:15px">
+
+        <div class="mobile-menu" onclick="toggleSidebar()">☰</div>
+
+        <div class="header-title">
+            <h2 id="pageTitle">Clinical Dashboard</h2>
+            <p>Medical information intelligence platform</p>
+        </div>
+
+    </div>
+
+    <div class="header-actions">
+
+        <div class="notification" onclick="showToast('No new notifications')">
+            🔔
+        </div>
+
+        <button class="btn btn-primary" onclick="showPageByName('patient')">
+            + New Patient
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="content">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section class="page active" id="dashboard">
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-label">Total Patients</div>
+                    <div class="stat-value" id="patientCount">24</div>
+                </div>
+
+                <div class="stat-icon">👥</div>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-label">Reports Processed</div>
+                    <div class="stat-value">68</div>
+                </div>
+
+                <div class="stat-icon">📄</div>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-label">Needs Verification</div>
+                    <div class="stat-value">7</div>
+                </div>
+
+                <div class="stat-icon">⚠️</div>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <div>
+                    <div class="stat-label">Structured Records</div>
+                    <div class="stat-value">61</div>
+                </div>
+
+                <div class="stat-icon">🧬</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <div class="card">
+
+            <div class="card-header">
+                <div>
+                    <h3>Quick Actions</h3>
+                    <p>Start a clinical information workflow</p>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+
+                <div class="action" onclick="showPageByName('patient')">
+
+                    <div class="action-icon">👤</div>
+
+                    <h4>Patient Intake</h4>
+
+                    <p>Capture patient information and symptoms.</p>
+
+                </div>
+
+
+                <div class="action" onclick="showPageByName('reports')">
+
+                    <div class="action-icon">📑</div>
+
+                    <h4>Process Report</h4>
+
+                    <p>Extract structured information from reports.</p>
+
+                </div>
+
+
+                <div class="action" onclick="showPageByName('records')">
+
+                    <div class="action-icon">🧬</div>
+
+                    <h4>Review Record</h4>
+
+                    <p>Review extracted clinical information.</p>
+
+                </div>
+
+
+                <div class="action" onclick="showPageByName('summary')">
+
+                    <div class="action-icon">🤖</div>
+
+                    <h4>Generate Summary</h4>
+
+                    <p>Create a patient-friendly information summary.</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-header">
+                <div>
+                    <h3>Recent Activity</h3>
+                    <p>Latest system events</p>
+                </div>
+            </div>
+
+            <div class="timeline">
+
+                <div class="timeline-item">
+                    <h4>Blood Report Processed</h4>
+                    <p>Today · AI extraction completed</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Patient Record Updated</h4>
+                    <p>Today · Human verification</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>New Patient Added</h4>
+                    <p>Yesterday · Patient intake</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>Report Uploaded</h4>
+                    <p>Yesterday · PDF document</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PATIENT INTAKE
+===================================================== -->
+
+<section class="page" id="patient">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <h3>Patient Information Intake</h3>
+                <p>Capture relevant patient information</p>
+            </div>
+
+            <span class="badge badge-user">
+                USER PROVIDED
+            </span>
+
+        </div>
+
+
+        <form id="patientForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input
+                        type="text"
+                        id="patientName"
+                        placeholder="Enter patient name"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input
+                        type="date"
+                        id="dob"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Age</label>
+                    <input
+                        type="number"
+                        id="age"
+                        placeholder="Age"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Sex</label>
+
+                    <select id="sex">
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option>
+                            Male
+                        </option>
+
+                        <option>
+                            Female
+                        </option>
+
+                        <option>
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="Phone number"
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Email address"
+                    >
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Current Symptoms
+                    </label>
+
+                    <textarea
+                        id="symptoms"
+                        placeholder="Describe symptoms reported by the patient..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Existing Medical Conditions
+                    </label>
+
+                    <textarea
+                        id="conditions"
+                        placeholder="Existing conditions / medical history..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Allergies
+                    </label>
+
+                    <textarea
+                        id="allergies"
+                        placeholder="Known allergies..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Current Medications
+                    </label>
+
+                    <textarea
+                        id="medications"
+                        placeholder="Current medications reported by patient..."
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Save Patient Information
+                </button>
+
+                <button
+                    type="reset"
+                    class="btn btn-secondary"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     REPORTS
+===================================================== -->
+
+<section class="page" id="reports">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <h3>Medical Report Processing</h3>
+                <p>Upload a report for structured extraction</p>
+            </div>
+
+            <span class="badge badge-ai">
+                AI POWERED
+            </span>
+
+        </div>
+
+
+        <div
+            class="upload-box"
+            onclick="document.getElementById('reportFile').click()"
+        >
+
+            <div class="upload-icon">
+                📄
+            </div>
+
+            <h3>
+                Upload Medical Report
+            </h3>
+
+            <p>
+                PDF, JPG, PNG or TXT files
+            </p>
+
+            <input
+                type="file"
+                id="reportFile"
+                accept=".pdf,.jpg,.jpeg,.png,.txt"
+                hidden
+                onchange="handleFile(this)"
+            >
+
+        </div>
+
+
+        <div id="selectedFile"
+             style="margin-top:15px;display:none">
+
+            <div class="alert alert-info">
+
+                <strong>Selected:</strong>
+                <span id="fileName"></span>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="form-actions"
+            style="margin-top:20px"
+        >
+
+            <button
+                class="btn btn-primary"
+                onclick="processReport()"
+            >
+                🤖 Process with AI
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showToast('Manual extraction mode enabled')"
+            >
+                Manual Entry
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <br>
+
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <h3>Processing Rules</h3>
+                <p>MedLens extraction principles</p>
+            </div>
+
+        </div>
+
+        <div class="alert alert-info">
+
+            <strong>Reference Range Protection</strong><br>
+
+            MedLens should determine Low / Normal / High
+            only when the source report provides the corresponding
+            reference range.
+
+        </div>
+
+        <div class="alert alert-warning">
+
+            <strong>AI Information Notice</strong><br>
+
+            Extracted information should be reviewed by authorized
+            medical staff before being treated as part of the verified record.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STRUCTURED RECORD
+===================================================== -->
+
+<section class="page" id="records">
+
+    <div class="card">
+
+        <div class="patient-profile">
+
+            <div class="patient-avatar">
+                JD
+            </div>
+
+            <div class="patient-info">
+
+                <h2 id="recordPatientName">
+                    John Doe
+                </h2>
+
+                <p>
+                    Patient ID: ML-2026-001 ·
+                    Age: 35 ·
+                    Male
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="alert alert-info">
+
+            <strong>Information provenance:</strong>
+
+            Every field should indicate whether it was
+            provided by the user, extracted from a source report,
+            or generated by AI.
+
+        </div>
+
+
+        <div class="card-header">
+
+            <div>
+                <h3>Structured Laboratory Information</h3>
+                <p>Extracted values and source reference ranges</p>
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="openAddTestModal()"
+            >
+                + Add Test
+            </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table id="resultsTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Test</th>
+                        <th>Value</th>
+                        <th>Unit</th>
+                        <th>Reference Range</th>
+                        <th>Status</th>
+                        <th>Source</th>
+                        <th>Confidence</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>Hemoglobin</td>
+
+                        <td>13.8</td>
+
+                        <td>g/dL</td>
+
+                        <td>13.0 - 17.0</td>
+
+                        <td>
+                            <span class="status status-normal">
+                                NORMAL
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-ai">
+                                AI Extracted
+                            </span>
+                        </td>
+
+                        <td>96%</td>
+
+                        <td>
+                            <button
+                                class="btn btn-success"
+                                onclick="verifyRow(this)"
+                            >
+                                Verify
+                            </button>
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Glucose</td>
+
+                        <td>126</td>
+
+                        <td>mg/dL</td>
+
+                        <td>70 - 100</td>
+
+                        <td>
+                            <span class="status status-high">
+                                HIGH
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-ai">
+                                AI Extracted
+                            </span>
+                        </td>
+
+                        <td>94%</td>
+
+                        <td>
+                            <button
+                                class="btn btn-success"
+                                onclick="verifyRow(this)"
+                            >
+                                Verify
+                            </button>
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Vitamin D</td>
+
+                        <td>18</td>
+
+                        <td>ng/mL</td>
+
+                        <td>30 - 100</td>
+
+                        <td>
+                            <span class="status status-low">
+                                LOW
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-ai">
+                                AI Extracted
+                            </span>
+                        </td>
+
+                        <td>91%</td>
+
+                        <td>
+                            <button
+                                class="btn btn-success"
+                                onclick="verifyRow(this)"
+                            >
+                                Verify
+                            </button>
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>Platelets</td>
+
+                        <td>---</td>
+
+                        <td>---</td>
+
+                        <td>Not provided</td>
+
+                        <td>
+                            <span class="status status-unknown">
+                                UNKNOWN
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-review">
+                                Needs Review
+                            </span>
+                        </td>
+
+                        <td>--</td>
+
+                        <td>
+                            <button
+                                class="btn btn-secondary"
+                                onclick="showToast('Manual review required')"
+                            >
+                                Review
+                            </button>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     AI SUMMARY
+===================================================== -->
+
+<section class="page" id="summary">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <h3>AI-Powered Patient Summary</h3>
+
+                <p>
+                    Patient-friendly information generated from
+                    available records
+                </p>
+
+            </div>
+
+            <span class="badge badge-ai">
+                AI GENERATED
+            </span>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <strong>Available Information</strong>
+
+            <br><br>
+
+            The available record contains information from
+            the patient's reported history and laboratory report.
+
+            <br><br>
+
+            The laboratory information includes Hemoglobin,
+            Glucose and Vitamin D values. The source report
+            provides reference ranges for these measurements,
+            allowing the system to label their reported status.
+
+            <br><br>
+
+            Hemoglobin is within the reference range provided
+            in the source report.
+
+            <br><br>
+
+            Glucose is above the reference range provided
+            in the source report.
+
+            <br><br>
+
+            Vitamin D is below the reference range provided
+            in the source report.
+
+            <br><br>
+
+            <strong>Important:</strong>
+
+            This summary organizes and explains available
+            medical information. It is not a diagnosis and
+            does not provide treatment or medication advice.
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                class="btn btn-primary"
+                onclick="generateSummary()"
+            >
+                🤖 Generate Updated Summary
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="window.print()"
+            >
+                🖨 Print / Export
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     HISTORY
+===================================================== -->
+
+<section class="page" id="history">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <h3>Patient History</h3>
+                <p>Chronological view of available records</p>
+            </div>
+
+        </div>
+
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="historySearch"
+                placeholder="Search patient history..."
+                onkeyup="searchHistory()"
+            >
+
+            <button
+                class="btn btn-primary"
+            >
+                Search
+            </button>
+
+        </div>
+
+
+        <div class="timeline" id="historyTimeline">
+
+            <div class="timeline-item">
+
+                <h4>
+                    Blood Laboratory Report
+                </h4>
+
+                <p>
+                    05 September 2026 ·
+                    AI extracted ·
+                    Human verification pending
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <h4>
+                    Patient Information Updated
+                </h4>
+
+                <p>
+                    04 September 2026 ·
+                    User provided
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <h4>
+                    Previous Medical Report
+                </h4>
+
+                <p>
+                    12 August 2026 ·
+                    Source document
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     AUDIT
+===================================================== -->
+
+<section class="page" id="audit">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>Audit History</h3>
+
+                <p>
+                    Track changes and information provenance
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Source</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            05 Sep 2026 12:30
+                        </td>
+
+                        <td>
+                            Dr. User
+                        </td>
+
+                        <td>
+                            Report uploaded
+                        </td>
+
+                        <td>
+                            User
+                        </td>
+
+                        <td>
+                            <span class="badge badge-user">
+                                Recorded
+                            </span>
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            05 Sep 2026 12:32
+                        </td>
+
+                        <td>
+                            MedLens AI
+                        </td>
+
+                        <td>
+                            Laboratory values extracted
+                        </td>
+
+                        <td>
+                            AI
+                        </td>
+
+                        <td>
+                            <span class="badge badge-review">
+                                Review Required
+                            </span>
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            05 Sep 2026 12:40
+                        </td>
+
+                        <td>
+                            Dr. User
+                        </td>
+
+                        <td>
+                            Hemoglobin verified
+                        </td>
+
+                        <td>
+                            Human
+                        </td>
+
+                        <td>
+                            <span class="badge badge-verified">
+                                Verified
+                            </span>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- =====================================================
+     ADD TEST MODAL
+===================================================== -->
+
+<div class="modal" id="testModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+                <h3>Add Medical Test</h3>
+                <p style="color:#64748b;font-size:13px">
+                    Enter information exactly as available
+                    in the source report.
+                </p>
+            </div>
+
+            <div
+                class="close"
+                onclick="closeModal()"
+            >
+                ×
+            </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Test Name</label>
+
+                <input
+                    id="testName"
+                    placeholder="Example: Hemoglobin"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Value</label>
+
+                <input
+                    id="testValue"
+                    placeholder="Example: 13.8"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Unit</label>
+
+                <input
+                    id="testUnit"
+                    placeholder="Example: g/dL"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Reference Range</label>
+
+                <input
+                    id="testRange"
+                    placeholder="Example: 13 - 17"
+                >
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>Observation</label>
+
+                <textarea
+                    id="testObservation"
+                    placeholder="Observation from source report..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                class="btn btn-primary"
+                onclick="addTest()"
+            >
+                Add to Record
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="closeModal()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+const API_URL = "http://localhost:3000";
+
+let selectedFile = null;
+
+
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+
+function showPage(pageId, element) {
+
+    document.querySelectorAll(".page")
+        .forEach(page => {
+            page.classList.remove("active");
+        });
+
+    document.getElementById(pageId)
+        .classList.add("active");
+
+
+    document.querySelectorAll(".nav-item")
+        .forEach(item => {
+            item.classList.remove("active");
+        });
+
+
+    if (element) {
+        element.classList.add("active");
+    }
+
+
+    const titles = {
+
+        dashboard: "Clinical Dashboard",
+
+        patient: "Patient Information Intake",
+
+        reports: "Medical Report Processing",
+
+        records: "Structured Medical Record",
+
+        summary: "AI-Powered Summary",
+
+        history: "Patient History",
+
+        audit: "Audit History"
+
+    };
+
+
+    document.getElementById("pageTitle")
+        .textContent = titles[pageId] || "MedLens";
+
+
+    document.getElementById("sidebar")
+        .classList.remove("open");
+}
+
+
+function showPageByName(pageId) {
+
+    const navItems =
+        document.querySelectorAll(".nav-item");
+
+    let matchingItem = null;
+
+    navItems.forEach(item => {
+
+        if (
+            item
+                .getAttribute("onclick")
+                ?.includes(`'${pageId}'`)
+        ) {
+            matchingItem = item;
+        }
+
+    });
+
+    showPage(pageId, matchingItem);
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function toggleSidebar() {
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 3000);
+
+}
+
+
+/* =========================================================
+   PATIENT FORM
+========================================================= */
+
+document
+    .getElementById("patientForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+
+        const patient = {
+
+            name:
+                document.getElementById("patientName").value,
+
+            dob:
+                document.getElementById("dob").value,
+
+            age:
+                document.getElementById("age").value,
+
+            sex:
+                document.getElementById("sex").value,
+
+            phone:
+                document.getElementById("phone").value,
+
+            email:
+                document.getElementById("email").value,
+
+            symptoms:
+                document.getElementById("symptoms").value,
+
+            conditions:
+                document.getElementById("conditions").value,
+
+            allergies:
+                document.getElementById("allergies").value,
+
+            medications:
+                document.getElementById("medications").value
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(`${API_URL}/api/patients`, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(patient)
+
+                });
+
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message || "Unable to save patient"
+                );
+
+            }
+
+
+            document.getElementById(
+                "recordPatientName"
+            ).textContent = patient.name;
+
+
+            showToast(
+                "Patient information saved successfully"
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast(
+                "Backend not connected. Patient captured locally."
+            );
+
+            document.getElementById(
+                "recordPatientName"
+            ).textContent = patient.name;
+
+        }
+
+    });
+
+
+/* =========================================================
+   FILE HANDLING
+========================================================= */
+
+function handleFile(input) {
+
+    if (!input.files.length) {
+        return;
+    }
+
+
+    selectedFile = input.files[0];
+
+
+    document.getElementById(
+        "selectedFile"
+    ).style.display = "block";
+
+
+    document.getElementById(
+        "fileName"
+    ).textContent =
+        selectedFile.name;
+
+}
+
+
+/* =========================================================
+   REPORT PROCESSING
+========================================================= */
+
+async function processReport() {
+
+    if (!selectedFile) {
+
+        showToast(
+            "Please select a medical report first"
+        );
+
+        return;
+
+    }
+
+
+    const formData = new FormData();
+
+    formData.append(
+        "report",
+        selectedFile
+    );
+
+
+    showToast(
+        "Uploading report for processing..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/reports/process`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "Processing failed"
+            );
+        }
+
+
+        showToast(
+            "Report processed successfully"
+        );
+
+
+        showPageByName("records");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Backend unavailable. Demo processing displayed."
+        );
+
+
+        setTimeout(() => {
+
+            showPageByName("records");
+
+        }, 1000);
+
+    }
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openAddTestModal() {
+
+    document
+        .getElementById("testModal")
+        .classList.add("show");
+
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById("testModal")
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   ADD TEST
+========================================================= */
+
+function addTest() {
+
+    const name =
+        document.getElementById("testName").value;
+
+    const value =
+        document.getElementById("testValue").value;
+
+    const unit =
+        document.getElementById("testUnit").value;
+
+    const range =
+        document.getElementById("testRange").value;
+
+    const observation =
+        document.getElementById("testObservation").value;
+
+
+    if (!name || !value) {
+
+        showToast(
+            "Test name and value are required"
+        );
+
+        return;
+
+    }
+
+
+    let status = "UNKNOWN";
+
+
+    /*
+       IMPORTANT:
+       We only determine status when a
+       reference range has been supplied.
+    */
+
+    if (range) {
+
+        const numbers =
+            range.match(
+                /[-+]?\d*\.?\d+/g
+            );
+
+
+        if (
+            numbers &&
+            numbers.length >= 2
+        ) {
+
+            const low =
+                parseFloat(numbers[0]);
+
+            const high =
+                parseFloat(numbers[1]);
+
+            const numericValue =
+                parseFloat(value);
+
+
+            if (!isNaN(numericValue)) {
+
+                if (numericValue < low) {
+
+                    status = "LOW";
+
+                } else if (numericValue > high) {
+
+                    status = "HIGH";
+
+                } else {
+
+                    status = "NORMAL";
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    let statusClass =
+        "status-unknown";
+
+
+    if (status === "LOW") {
+        statusClass = "status-low";
+    }
+
+    if (status === "HIGH") {
+        statusClass = "status-high";
+    }
+
+    if (status === "NORMAL") {
+        statusClass = "status-normal";
+    }
+
+
+    const row =
+        document
+            .getElementById("resultsTable")
+            .querySelector("tbody")
+            .insertRow();
+
+
+    row.innerHTML = `
+
+        <td>${escapeHTML(name)}</td>
+
+        <td>${escapeHTML(value)}</td>
+
+        <td>${escapeHTML(unit || "---")}</td>
+
+        <td>${escapeHTML(range || "Not provided")}</td>
+
+        <td>
+            <span class="status ${statusClass}">
+                ${status}
+            </span>
+        </td>
+
+        <td>
+            <span class="badge badge-user">
+                User Provided
+            </span>
+        </td>
+
+        <td>100%</td>
+
+        <td>
+            <button
+                class="btn btn-success"
+                onclick="verifyRow(this)"
+            >
+                Verify
+            </button>
+        </td>
+
+    `;
+
+
+    closeModal();
+
+    showToast(
+        `${name} added to structured record`
+    );
+
+
+    document.getElementById("testName").value = "";
+    document.getElementById("testValue").value = "";
+    document.getElementById("testUnit").value = "";
+    document.getElementById("testRange").value = "";
+    document.getElementById("testObservation").value = "";
+
+}
+
+
+/* =========================================================
+   VERIFY RECORD
+========================================================= */
+
+function verifyRow(button) {
+
+    const row =
+        button.closest("tr");
+
+
+    const sourceCell =
+        row.cells[5];
+
+
+    sourceCell.innerHTML = `
+
+        <span class="badge badge-verified">
+            Human Verified
+        </span>
+
+    `;
+
+
+    button.textContent =
+        "Verified";
+
+    button.disabled = true;
+
+    button.classList.remove(
+        "btn-success"
+    );
+
+    button.classList.add(
+        "btn-secondary"
+    );
+
+
+    showToast(
+        "Information marked as human verified"
+    );
+
+}
+
+
+/* =========================================================
+   AI SUMMARY
+========================================================= */
+
+async function generateSummary() {
+
+    showToast(
+        "Generating patient-friendly summary..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/ai/summary`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        patient:
+                            document
+                                .getElementById(
+                                    "recordPatientName"
+                                )
+                                .textContent
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "AI failed"
+            );
+        }
+
+
+        showToast(
+            "AI summary generated"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Demo summary displayed"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   HISTORY SEARCH
+========================================================= */
+
+function searchHistory() {
+
+    const query =
+        document
+            .getElementById("historySearch")
+            .value
+            .toLowerCase();
+
+
+    const items =
+        document.querySelectorAll(
+            "#historyTimeline .timeline-item"
+        );
+
+
+    items.forEach(item => {
+
+        item.style.display =
+            item.textContent
+                .toLowerCase()
+                .includes(query)
+                ? "block"
+                : "none";
+
+    });
+
+}
+
+
+/* =========================================================
+   HTML SECURITY
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+console.log(
+    "MedLens Clinical Information Intelligence loaded."
+);
+
+</script>
+
+</body>
+</html>
