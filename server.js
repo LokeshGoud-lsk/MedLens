@@ -30,6 +30,7 @@ const gemini = new GoogleGenAI({
 const app = express();
 
 
+
 // ============================================================
 // SERVER PORT
 // ============================================================
@@ -76,12 +77,13 @@ app.use(
 // UPLOAD DIRECTORY
 // ============================================================
 
-const uploadDirectory =
-    path.join(
-        __dirname,
-        "uploads"
-    );
+const uploadDirectory = "/tmp/uploads";
 
+if (!fs.existsSync(uploadDirectory)) {
+    fs.mkdirSync(uploadDirectory, {
+        recursive: true
+    });
+}
 
 if (!fs.existsSync(uploadDirectory)) {
 
@@ -1232,37 +1234,4 @@ app.use(
 // START SERVER
 // ============================================================
 
-app.listen(
-    PORT,
-    function () {
-
-        console.log(
-            "======================================"
-        );
-
-        console.log(
-            "       MEDLENS BACKEND SERVER"
-        );
-
-        console.log(
-            "======================================"
-        );
-
-        console.log(
-            `Server running at: http://localhost:${PORT}`
-        );
-
-        console.log(
-            `Frontend: http://localhost:${PORT}`
-        );
-
-        console.log(
-            "Database: NOT CONNECTED"
-        );
-
-        console.log(
-            "======================================"
-        );
-
-    }
-);
+module.exports = app;
